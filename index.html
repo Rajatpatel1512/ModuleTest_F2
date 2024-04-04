@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Employee Management System</title>
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: black;
+    color: white;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+  }
+
+  #employeeForm, #addedEmployees {
+    width: 80%;
+    max-width: 600px;
+    text-align: center;
+    margin-bottom: 20px;
+  }
+
+  .input-container {
+    width: 100%;
+    margin-bottom: 20px;
+  }
+
+  .input-container label {
+    display: block;
+    margin-bottom: 5px;
+    text-align: left;
+  }
+
+  .input-container input {
+    width: 100%;
+    padding: 10px;
+    box-sizing: border-box;
+  }
+
+  button {
+    padding: 10px 20px;
+    margin-bottom: 10px;
+  }
+
+  .success-message {
+    color: green;
+    margin-bottom: 10px;
+  }
+
+  .error-message {
+    color: red;
+    margin-bottom: 10px;
+  }
+
+  #employeeList {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
+  }
+
+  .employee-card {
+    width: 45%;
+    margin-bottom: 20px;
+    border: 1px solid #ccc;
+    padding: 10px;
+    background-color: #333;
+  }
+
+  .employee-card p {
+    color: white;
+    margin: 5px 0;
+  }
+
+  .employee-card button {
+    background-color: #555;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    cursor: pointer;
+  }
+
+  .employee-count {
+    margin-bottom: 20px;
+  }
+
+  /* Responsive Styling */
+  @media (max-width: 768px) {
+    #employeeForm, #addedEmployees {
+      width: 90%;
+    }
+    .employee-card {
+      width: 100%;
+    }
+  }
+</style>
+</head>
+<body>
+
+<div id="employeeForm">
+  <h2>New Employees</h2>
+  <div class="input-container">
+    <label for="name">Name:</label>
+    <input type="text" id="name" placeholder="Enter Name">
+  </div>
+  <div class="input-container">
+    <label for="profession">Profession:</label>
+    <input type="text" id="profession" placeholder="Enter Profession">
+  </div>
+  <div class="input-container">
+    <label for="age">Age:</label>
+    <input type="number" id="age" placeholder="Enter Age">
+  </div>
+  <button onclick="addEmployee()">Add User</button>
+  <div id="messageContainer"></div>
+</div>
+
+<div id="addedEmployees">
+  <h2>Added Employees <span id="employeeCount">(0)</span></h2>
+  <div id="employeeList"></div>
+</div>
+
+<script>
+  let employees = [];
+
+  function addEmployee() {
+    const name = document.getElementById('name').value.trim();
+    const profession = document.getElementById('profession').value.trim();
+    const age = document.getElementById('age').value.trim();
+
+    if (name === '' || profession === '' || age === '') {
+      displayMessage('error', 'All fields are required');
+      return;
+    }
+
+    const employee = {
+      id: employees.length + 1,
+      name: name,
+      profession: profession,
+      age: parseInt(age)
+    };
+
+    employees.push(employee);
+    displayEmployees();
+    displayMessage('success', 'Employee added successfully');
+  }
+
+  function displayEmployees() {
+    const employeeList = document.getElementById('employeeList');
+    const employeeCount = document.getElementById('employeeCount');
+    employeeList.innerHTML = '';
+    employeeCount.textContent = `(${employees.length})`;
+
+    employees.forEach(employee => {
+      const div = document.createElement('div');
+      div.classList.add('employee-card');
+      div.innerHTML = `
+        <p>Name: ${employee.name}</p>
+        <p>Profession: ${employee.profession}</p>
+        <p>Age: ${employee.age}</p>
+        <button onclick="deleteEmployee(${employee.id})">Delete</button>
+      `;
+      employeeList.appendChild(div);
+    });
+  }
+
+  function deleteEmployee(id) {
+    employees = employees.filter(employee => employee.id !== id);
+    displayEmployees();
+  }
+
+  function displayMessage(type, message) {
+    const messageContainer = document.getElementById('messageContainer');
+    messageContainer.innerHTML = '';
+    const messageDiv = document.createElement('div');
+    messageDiv.textContent = message;
+    if (type === 'success') {
+      messageDiv.classList.add('success-message');
+    } else if (type === 'error') {
+      messageDiv.classList.add('error-message');
+    }
+    messageContainer.appendChild(messageDiv);
+    setTimeout(() => {
+      messageDiv.remove();
+    }, 3000);
+  }
+</script>
+
+</body>
+</html>
